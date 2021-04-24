@@ -44,17 +44,17 @@ public class FunctionBlockAdapter extends RecyclerView.Adapter<FunctionBlockAdap
         FunctionItem fi = data.get(position);
         setImage(fi.imageUrl, holder.iv);
         holder.text.setText(fi.name);
-        holder.btn.setImageResource(R.drawable.ic_block_delete);
-        holder.btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FunctionItem fi = data.remove(index);
-                if (listener != null) {
-                    listener.remove(fi);
-                }
-                notifyDataSetChanged();
-            }
-        });
+//        holder.btn.setImageResource(R.drawable.ic_block_delete);
+//        holder.btn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                FunctionItem fi = data.remove(index);
+//                if (listener != null) {
+//                    listener.remove(fi);
+//                }
+//                notifyDataSetChanged();
+//            }
+//        });
     }
 
     public void setImage(String url, ImageView iv) {
@@ -99,14 +99,14 @@ public class FunctionBlockAdapter extends RecyclerView.Adapter<FunctionBlockAdap
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private ImageView iv, btn;
+        private ImageView iv;//btn;
         private TextView text;
 
         public ViewHolder(View itemView) {
             super(itemView);
             iv = (ImageView) itemView.findViewById(R.id.iv);
             text = (TextView) itemView.findViewById(R.id.text);
-            btn = (ImageView) itemView.findViewById(R.id.btn);
+            //btn = (ImageView) itemView.findViewById(R.id.btn);
         }
     }
 

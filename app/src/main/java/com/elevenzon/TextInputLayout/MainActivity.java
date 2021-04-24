@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void init() {
         //getSupportActionBar().hide();
-        recyclerViewExist = (RecyclerView) findViewById(R.id.recyclerViewExist);
+        //recyclerViewExist = (RecyclerView) findViewById(R.id.recyclerViewExist);
         horizonLScrollView = (HorizontalScrollView) findViewById(R.id.horizonLScrollView);
         rg_tab = (RadioGroup) findViewById(R.id.rg_tab);
         recyclerViewAll = (RecyclerView) findViewById(R.id.recyclerViewAll);
@@ -91,13 +91,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         selData = sfUtils.getSelectFunctionItem();
 
         blockAdapter = new FunctionBlockAdapter(this, selData);
-        recyclerViewExist.setLayoutManager(new GridLayoutManager(this, 4));
-        recyclerViewExist.setAdapter(blockAdapter);
-        recyclerViewExist.addItemDecoration(new SpaceItemDecoration(4, dip2px(this, 10)));
-
-        DefaultItemCallback callback = new DefaultItemCallback(blockAdapter);
-        DefaultItemTouchHelper helper = new DefaultItemTouchHelper(callback);
-        helper.attachToRecyclerView(recyclerViewExist);
+//        recyclerViewExist.setLayoutManager(new GridLayoutManager(this, 4));
+//        recyclerViewExist.setAdapter(blockAdapter);
+//        recyclerViewExist.addItemDecoration(new SpaceItemDecoration(4, dip2px(this, 10)));
+//
+//        DefaultItemCallback callback = new DefaultItemCallback(blockAdapter);
+//        DefaultItemTouchHelper helper = new DefaultItemTouchHelper(callback);
+//        helper.attachToRecyclerView(recyclerViewExist);
 
         gridManager = new GridLayoutManager(this, 4);
         gridManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {

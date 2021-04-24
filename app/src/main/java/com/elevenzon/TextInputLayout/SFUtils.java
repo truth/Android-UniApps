@@ -33,7 +33,7 @@ public class SFUtils {
         List<TabItem> tabItems = null;
         if("".equals(allData)){
             try {
-                InputStream is = context.getAssets().open("ceshi.txt");
+                InputStream is = context.getAssets().open("apps.json");
                 InputStreamReader isr = new InputStreamReader(is);
                 BufferedReader br = new BufferedReader(isr);
                 String str = null;

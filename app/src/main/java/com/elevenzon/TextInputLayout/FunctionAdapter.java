@@ -54,6 +54,7 @@ public class FunctionAdapter extends RecyclerView.Adapter {
             FunctionItem fi = data.get(position);
             setImage(fi.imageUrl,holder.iv);
             holder.text.setText(fi.name);
+            /*
             holder.btn.setImageResource(fi.isSelect ? R.drawable.ic_block_selected : R.drawable.ic_block_add);
             holder.btn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -69,6 +70,7 @@ public class FunctionAdapter extends RecyclerView.Adapter {
                     }
                 }
             });
+            */
             holder.iv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -116,14 +118,14 @@ public class FunctionAdapter extends RecyclerView.Adapter {
 
     private class FunctionViewHolder extends RecyclerView.ViewHolder {
 
-        private ImageView iv, btn;
+        private ImageView iv;//btn;
         private TextView text;
 
         public FunctionViewHolder(View itemView) {
             super(itemView);
             iv = (ImageView) itemView.findViewById(R.id.iv);
             text = (TextView) itemView.findViewById(R.id.text);
-            btn = (ImageView) itemView.findViewById(R.id.btn);
+            //btn = (ImageView) itemView.findViewById(R.id.btn);
         }
     }
 

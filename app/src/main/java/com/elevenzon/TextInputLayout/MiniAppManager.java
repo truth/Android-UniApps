@@ -2,18 +2,24 @@ package com.elevenzon.TextInputLayout;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.JsonReader;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.elevenzon.TextInputLayout.util.FileUtil;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +41,8 @@ public class MiniAppManager {
     private static String [] names = {"04E3A11","2108B0A","AB47F19"};
     public final  static String serverUrl = "http://s1.wangzhenli.net";
     private static Map<String,TinyApp> apps = new HashMap<>();
+    private static SharedPreferences sp = null;
+    private static Context ctx = null;
 
     public static String get(int i) {
         return names[i%3];
@@ -42,7 +50,17 @@ public class MiniAppManager {
     public static Collection<TinyApp> getApps() {
         return apps.values();
     }
-    public static void init() {
+    public static void init(Context context) {
+        ctx= context;
+        sp = ctx.getSharedPreferences("apps",Context.MODE_PRIVATE);
+        String cacheApp = sp.getString("cache","");
+        if(!"".equals(cacheApp)) {
+            List<TinyApp> list = JSON.parseArray(cacheApp,TinyApp.class);
+            for (TinyApp app :list) {
+                apps.put(app.getName(),app);
+            }
+        }
+        Log.d(TAG, "cacheApp: " +cacheApp );
         String url = serverUrl+"/uni-app/apps.json";
         OkHttpClient okHttpClient = new OkHttpClient();
         final Request request = new Request.Builder()
@@ -55,11 +73,14 @@ public class MiniAppManager {
                 try {
                     Response response = call.execute();
                     String content = response.body().string();
-                    Log.d(TAG, "run: " +content );
+                    Log.d(TAG, "uni-apps: " +content );
                     List<TinyApp> list = JSON.parseArray(content,TinyApp.class);
                     for (TinyApp app :list) {
                         apps.put(app.getName(),app);
                     }
+                    SharedPreferences.Editor editor = sp.edit();
+                    editor.putString("cache",content);
+                    editor.commit();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

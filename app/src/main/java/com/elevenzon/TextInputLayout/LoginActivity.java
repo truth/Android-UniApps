@@ -85,7 +85,7 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        MiniAppManager.init();
+        MiniAppManager.init(this.getApplicationContext());
     }
 
     public boolean SetValidation() {
