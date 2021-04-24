@@ -32,17 +32,17 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // ÉèÖÃActivityÈ«ÆÁ
+        // è®¾ç½®Activityå…¨å±
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_login);
-// Òş²ØActionBar
+        // éšè—ActionBar
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.hide();
         }
-        // Ö§³ÖÏÔÊ¾µ½Áõº£ÇøÓò
+        // æ”¯æŒæ˜¾ç¤ºåˆ°åˆ˜æµ·åŒºåŸŸ
         notchScreenManager.setDisplayInNotch(this);
-        // »ñÈ¡Áõº£ÆÁĞÅÏ¢
+        // è·å–åˆ˜æµ·å±ä¿¡æ¯
         notchScreenManager.getNotchInfo(this, new INotchScreen.NotchScreenCallback() {
             @Override
             public void onResult(INotchScreen.NotchScreenInfo notchScreenInfo) {
@@ -50,7 +50,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (notchScreenInfo.hasNotch) {
                     for (Rect rect : notchScreenInfo.notchRects) {
                         Log.i(TAG, "notch screen Rect =  " + rect.toShortString());
-                        // ½«±»ÕÚµ²µÄTextView×óÒÆ
+                        // å°†è¢«é®æŒ¡çš„TextViewå·¦ç§»
 //                        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) textView.getLayoutParams();
 //                        layoutParams.leftMargin = rect.right;
 //                        textView.setLayoutParams(layoutParams);
@@ -59,7 +59,9 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
         email = (EditText) findViewById(R.id.email);
+        email.setText("wzl@gkmobile.com");
         password = (EditText) findViewById(R.id.password);
+        password.setText("12345678");
         login = (Button) findViewById(R.id.login);
         register = (TextView) findViewById(R.id.register);
         emailError = (TextInputLayout) findViewById(R.id.emailError);
@@ -68,7 +70,10 @@ public class LoginActivity extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SetValidation();
+                if(SetValidation()) {
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -80,9 +85,10 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        MiniAppManager.init();
     }
 
-    public void SetValidation() {
+    public boolean SetValidation() {
         // Check for a valid email address.
         if (email.getText().toString().isEmpty()) {
             emailError.setError(getResources().getString(R.string.email_error));
@@ -110,7 +116,7 @@ public class LoginActivity extends AppCompatActivity {
         if (isEmailValid && isPasswordValid) {
             Toast.makeText(getApplicationContext(), "Successfully", Toast.LENGTH_SHORT).show();
         }
-
+        return isPasswordValid && isEmailValid;
     }
 
 }

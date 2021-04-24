@@ -4,4 +4,9 @@
     <color name="colorPrimaryDark">#76a5df</color>
     <color name="colorAccent">#ffff8800</color>
     <color name="zircon">#e0e6e4</color>
+    <color name="titlecolor">#1296db</color>
+    <color name="transparent">#00FFFFFF</color>
+    <color name="line_color">#CCCCCC</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="black">#000000</color>
 </resources>
