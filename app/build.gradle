@@ -15,7 +15,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         ndk {
-            abiFilters 'armeabi-v7a',"arm64-v8a" //不支持armeabi
+            abiFilters  "x86", "x86_64",'armeabi-v7a',"arm64-v8a" //不支持armeabi
         }
         manifestPlaceholders = mfph
     }
@@ -60,6 +60,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'], exclude: [])
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     implementation project(path: ':notchlib')
+    implementation project(path: ':UniMqtt')
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'

@@ -1,1 +1,1 @@
-include ':app',':notchlib', ':ceshi'
+include ':app',':notchlib', ':ceshi',':UniMqtt'

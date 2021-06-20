@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.elevenzon.TextInputLayout.util.FileUtil;
+import com.elevenzon.TextInputLayout.util.GlobalCache;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -20,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -39,7 +41,8 @@ import io.dcloud.feature.sdk.DCUniMPSDK;
 public class MiniAppManager {
     private static String TAG="TinyAPP";
     private static String [] names = {"04E3A11","2108B0A","AB47F19"};
-    public final  static String serverUrl = "http://s1.wangzhenli.net";
+    //public final  static String serverUrl = "http://s1.wangzhenli.net";
+    public final static String serverUrl ="http://122.225.91.190:8088";
     private static Map<String,TinyApp> apps = new HashMap<>();
     private static SharedPreferences sp = null;
     private static Context ctx = null;
@@ -50,18 +53,25 @@ public class MiniAppManager {
     public static Collection<TinyApp> getApps() {
         return apps.values();
     }
+    public static MainActivity mainActivity;
     public static void init(Context context) {
         ctx= context;
         sp = ctx.getSharedPreferences("apps",Context.MODE_PRIVATE);
         String cacheApp = sp.getString("cache","");
         if(!"".equals(cacheApp)) {
-            List<TinyApp> list = JSON.parseArray(cacheApp,TinyApp.class);
-            for (TinyApp app :list) {
-                apps.put(app.getName(),app);
+            try {
+                List<TinyApp> list = JSON.parseArray(cacheApp, TinyApp.class);
+
+                for (TinyApp app : list) {
+                    apps.put(app.getName(), app);
+                }
+            }catch (Exception ex) {
+                ex.printStackTrace();
             }
         }
         Log.d(TAG, "cacheApp: " +cacheApp );
-        String url = serverUrl+"/uni-app/apps.json";
+        //String url = serverUrl+"/uni-app/apps.json";
+        String url = serverUrl+"/jeecg-boot/app/appApp/queryUserPageList?userId="+ GlobalCache.get("userId");
         OkHttpClient okHttpClient = new OkHttpClient();
         final Request request = new Request.Builder()
                 .url(url)
@@ -74,13 +84,34 @@ public class MiniAppManager {
                     Response response = call.execute();
                     String content = response.body().string();
                     Log.d(TAG, "uni-apps: " +content );
+                    ApiResult result = JSON.parseObject(content,ApiResult.class);
+                    List<TinyApp> tinyApps = new ArrayList<>();
+                    if(result.getResult()!=null) {
+                        List<MiniApp> list = JSON.parseArray(result.getResult().toString(),MiniApp.class);
+                        for (MiniApp app :list) {
+                            TinyApp tinyApp =  new TinyApp();
+                            tinyApp.setApp(app.getApp());
+                            tinyApp.setBrief(app.getMainDesc());
+                            tinyApp.setImage(app.getImageUrl());
+                            //http://122.225.91.190:8088/jeecg-boot/sys/common/static/files/__UNI__40A58A1_1622622073581.wgt
+                            tinyApp.setUrl(serverUrl+"/jeecg-boot/sys/common/static/"+app.getUrl());
+                            tinyApp.setVersion(app.getVersion());
+                            tinyApp.setName(app.getName());
+                            tinyApps.add(tinyApp);
+                            apps.put(tinyApp.getName(),tinyApp);
+                        }
+                    }
+                    /*
                     List<TinyApp> list = JSON.parseArray(content,TinyApp.class);
                     for (TinyApp app :list) {
                         apps.put(app.getName(),app);
                     }
+                    */
+
                     SharedPreferences.Editor editor = sp.edit();
-                    editor.putString("cache",content);
+                    editor.putString("cache",JSON.toJSONString(tinyApps));
                     editor.commit();
+                    mainActivity.notifyDataUpate();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -116,7 +147,7 @@ public class MiniAppManager {
     public static boolean DownloadSmallFile(final String uri, final String filePath) {
         OkHttpClient client = new OkHttpClient();
         String url = uri;
-        if(!uri.equals("http")){
+        if(!uri.startsWith("http")){
             url=MiniAppManager.serverUrl+url;
         }
         Request request = new Request.Builder().url(url).build();

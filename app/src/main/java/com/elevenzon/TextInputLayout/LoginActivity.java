@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.EditText;
 
+import com.elevenzon.TextInputLayout.util.MyAsyncTask;
 import com.smarx.notchlib.INotchScreen;
 import com.smarx.notchlib.NotchScreenManager;
 
@@ -59,9 +60,9 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
         email = (EditText) findViewById(R.id.email);
-        email.setText("wzl@gkmobile.com");
+        email.setText("admin");
         password = (EditText) findViewById(R.id.password);
-        password.setText("12345678");
+        password.setText("nutshell");
         login = (Button) findViewById(R.id.login);
         register = (TextView) findViewById(R.id.register);
         emailError = (TextInputLayout) findViewById(R.id.emailError);
@@ -71,8 +72,12 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(SetValidation()) {
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
+                    //Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    //startActivity(intent);
+                    MyAsyncTask task = new MyAsyncTask(LoginActivity.this.getApplicationContext(),LoginActivity.this);
+                    task.setUser(email.getText().toString());
+                    task.setPassword(password.getText().toString());
+                    task.execute(1000);
                 }
             }
         });
@@ -85,16 +90,18 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        MiniAppManager.init(this.getApplicationContext());
     }
 
     public boolean SetValidation() {
         // Check for a valid email address.
+        /**
+         * else if (!Patterns.EMAIL_ADDRESS.matcher(email.getText().toString()).matches()) {
+         *             emailError.setError(getResources().getString(R.string.error_invalid_email));
+         *             isEmailValid = false;
+         *         }
+         */
         if (email.getText().toString().isEmpty()) {
-            emailError.setError(getResources().getString(R.string.email_error));
-            isEmailValid = false;
-        } else if (!Patterns.EMAIL_ADDRESS.matcher(email.getText().toString()).matches()) {
-            emailError.setError(getResources().getString(R.string.error_invalid_email));
+            emailError.setError(getResources().getString(R.string.name_error));
             isEmailValid = false;
         } else  {
             isEmailValid = true;

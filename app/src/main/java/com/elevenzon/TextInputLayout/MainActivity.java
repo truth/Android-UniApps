@@ -57,6 +57,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        MiniAppManager.mainActivity = this;
+        MiniAppManager.init(this.getApplicationContext());
         init();
         addListener();
         MenuActionSheetItem item = new MenuActionSheetItem("关于", "gy");
@@ -75,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.e("unimp", "onInitFinished-----------"+isSuccess);
             }
         });
+
     }
 
 
@@ -230,7 +233,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             e.printStackTrace();
         }
     }
-
+    public void notifyDataUpate() {
+        functionAdapter.notifyDataSetChanged();
+    }
     private CompoundButton.OnCheckedChangeListener onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
