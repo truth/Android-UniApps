@@ -1,6 +1,8 @@
 package com.elevenzon.TextInputLayout;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Build;
 import android.support.constraint.ConstraintLayout;
@@ -60,9 +62,16 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
         email = (EditText) findViewById(R.id.email);
-        email.setText("admin");
+        SharedPreferences sp = getApplicationContext().getSharedPreferences("private", Context.MODE_PRIVATE);
+        String user = sp.getString("username","");
+        String pwd = sp.getString("password","");
+        if(user!=null && user.length()>0) {
+            email.setText(user);
+        }
         password = (EditText) findViewById(R.id.password);
-        password.setText("nutshell");
+        if(pwd!=null && pwd.length()>0) {
+            password.setText(pwd);
+        }
         login = (Button) findViewById(R.id.login);
         register = (TextView) findViewById(R.id.register);
         emailError = (TextInputLayout) findViewById(R.id.emailError);
@@ -82,6 +91,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        /*
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,6 +100,7 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        */
     }
 
     public boolean SetValidation() {

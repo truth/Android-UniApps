@@ -63,7 +63,8 @@ public class SFUtils {
         }
         Collection<TinyApp> apps = MiniAppManager.getApps();
         for(TinyApp app:apps) {
-            FunctionItem functionItem = new FunctionItem(app.getName(),false,"icon_home_selected","#86c751");
+            //"push"
+            FunctionItem functionItem = new FunctionItem(app.getName(),false,app.getImage(),"#86c751");
             functionItem.app = app;
             functionItems.add(functionItem);
         }

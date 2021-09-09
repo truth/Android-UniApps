@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">TextInputLayout</string>
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
-    <string name="login">Login</string>
+    <string name="app_name">谭家湾管理</string>
+    <string name="prompt_email">用户名</string>
+    <string name="prompt_password">密码</string>
+    <string name="login">登  录</string>
     <string name="create_new">Click here for register</string>
     <string name="not_register">Not Register?</string>
     <string name="name">Name</string>

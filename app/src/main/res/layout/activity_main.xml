@@ -71,7 +71,7 @@
         android:layout_height="4dp"
         android:background="@color/line_color">
     </View>
-
+    <!--
     <HorizontalScrollView
         android:id="@+id/horizonLScrollView"
         android:layout_width="match_parent"
@@ -86,7 +86,7 @@
             android:gravity="center_vertical"
             android:orientation="horizontal" />
     </HorizontalScrollView>
-
+    -->
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"

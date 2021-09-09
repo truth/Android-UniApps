@@ -22,6 +22,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.dcloud.common.adapter.util.Logger;
 import io.dcloud.feature.sdk.DCSDKInitConfig;
 import io.dcloud.feature.sdk.DCUniMPSDK;
 import io.dcloud.feature.sdk.MenuActionSheetItem;
@@ -62,12 +63,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         init();
         addListener();
         MenuActionSheetItem item = new MenuActionSheetItem("关于", "gy");
+        MenuActionSheetItem item2 = new MenuActionSheetItem("更新", "refresh");
         List<MenuActionSheetItem> sheetItems = new ArrayList<>();
         sheetItems.add(item);
+        sheetItems.add(item2);
         DCSDKInitConfig config = new DCSDKInitConfig.Builder()
                 .setCapsule(true)
                 .setMenuDefFontSize("16px")
-                .setMenuDefFontColor("#ffffff")
+                .setMenuDefFontColor("#000000")
                 .setMenuDefFontWeight("normal").setEnableBackground(true)
                 .setMenuActionSheetItems(sheetItems)
                 .build();
@@ -77,7 +80,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.e("unimp", "onInitFinished-----------"+isSuccess);
             }
         });
-
+        DCUniMPSDK.getInstance().setDefMenuButtonClickCallBack(new DCUniMPSDK.IMenuButtonClickCallBack() {
+            @Override
+            public void onClick(String appid, String id) {
+                switch (id) {
+                    case "gy":{
+                        Toast.makeText(null,"小程序["+id+"]",Toast.LENGTH_LONG);
+                        break;
+                    }
+                    case "refresh":{
+                        Toast.makeText(null,"更新小程序!",Toast.LENGTH_LONG);
+                        break;
+                    }
+                }
+            }
+        });
     }
 
 
@@ -86,8 +103,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void init() {
         //getSupportActionBar().hide();
         //recyclerViewExist = (RecyclerView) findViewById(R.id.recyclerViewExist);
-        horizonLScrollView = (HorizontalScrollView) findViewById(R.id.horizonLScrollView);
-        rg_tab = (RadioGroup) findViewById(R.id.rg_tab);
+        //horizonLScrollView = (HorizontalScrollView) findViewById(R.id.horizonLScrollView);
+        //rg_tab = (RadioGroup) findViewById(R.id.rg_tab);
         recyclerViewAll = (RecyclerView) findViewById(R.id.recyclerViewAll);
         sfUtils  = new SFUtils(this);
         allData = sfUtils.getAllFunctionWithState();
@@ -121,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         resetEditHeight(selData.size());
 
-        initTab();
+        //initTab();
     }
 
 
@@ -140,8 +157,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.submit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sfUtils.saveSelectFunctionItem(selData);
-                sfUtils.saveAllFunctionWithState(allData);
+                //sfUtils.saveSelectFunctionItem(selData);
+                //sfUtils.saveAllFunctionWithState(allData);
             }
         });
         functionAdapter.setOnItemAddListener(new FunctionAdapter.OnItemAddListener() {
@@ -234,7 +251,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
     public void notifyDataUpate() {
-        functionAdapter.notifyDataSetChanged();
+        allData = sfUtils.getAllFunctionWithState();
+        functionAdapter.setData(allData);
+        runOnUiThread(new Runnable(){
+            public void run() {
+                functionAdapter.notifyDataSetChanged();
+            }
+        });
+
     }
     private CompoundButton.OnCheckedChangeListener onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
@@ -263,9 +287,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 row = 1;
             if (lastRow != row) {
                 lastRow = row;
-                ViewGroup.LayoutParams params = recyclerViewExist.getLayoutParams();
-                params.height = itemWidth * row;
-                recyclerViewExist.setLayoutParams(params);
+                //ViewGroup.LayoutParams params = recyclerViewExist.getLayoutParams();
+                //params.height = itemWidth * row;
+                //recyclerViewExist.setLayoutParams(params);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -347,7 +371,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 radioButton.setOnCheckedChangeListener(null);
                 radioButton.setChecked(true);
                 radioButton.setOnCheckedChangeListener(onCheckedChangeListener);
-                horizonLScrollView.scrollBy(x, 0);
+                //horizonLScrollView.scrollBy(x, 0);
             }
         } catch (Exception e) {
             e.printStackTrace();

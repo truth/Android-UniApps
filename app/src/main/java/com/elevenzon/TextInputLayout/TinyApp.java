@@ -7,6 +7,29 @@ public class TinyApp {
     private String url;
     private String version;
     private String brief;
+    private boolean isNew;
+    private Status status;
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public enum Status {
+        OK,
+        NEW,
+        INIT
+    }
+    public boolean isNew() {
+        return isNew;
+    }
+
+    public void setNew(boolean aNew) {
+        isNew = aNew;
+    }
 
     public String getName() {
         return name;

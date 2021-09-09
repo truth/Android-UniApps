@@ -2,6 +2,7 @@ package com.elevenzon.TextInputLayout;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +26,14 @@ public class FunctionAdapter extends RecyclerView.Adapter {
 
     private LayoutInflater inflater;
     private Context context;
+
+    public List<FunctionItem> getData() {
+        return data;
+    }
+
+    public void setData(List<FunctionItem> data) {
+        this.data = data;
+    }
 
     public FunctionAdapter(Context context, @NonNull List<FunctionItem> data) {
         this.context = context;
@@ -89,8 +100,12 @@ public class FunctionAdapter extends RecyclerView.Adapter {
 
     public void setImage(String url, ImageView iv) {
         try {
-            int rid = context.getResources().getIdentifier(url,"drawable",context.getPackageName());
-            iv.setImageResource(rid);
+            if(url.startsWith("http")){
+                Picasso.get().load(url).into(iv);
+            }else {
+                int rid = context.getResources().getIdentifier(url, "drawable", context.getPackageName());
+                iv.setImageResource(rid);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

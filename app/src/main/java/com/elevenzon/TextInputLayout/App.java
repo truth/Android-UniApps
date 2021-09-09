@@ -25,6 +25,7 @@ public class App extends Application {
 //        } catch (WXException e) {
 //            e.printStackTrace();
 //        }
+        /*
         //初始化 uni小程序SDK ----start----------
         MenuActionSheetItem item = new MenuActionSheetItem("关于", "gy");
         MenuActionSheetItem item1 = new MenuActionSheetItem("获取当前页面url", "hqdqym");
@@ -48,6 +49,8 @@ public class App extends Application {
             }
         });
         //初始化 uni小程序SDK ----end----------
+
+        */
     }
 
     @Override

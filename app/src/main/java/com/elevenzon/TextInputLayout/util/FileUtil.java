@@ -41,4 +41,34 @@ public class FileUtil {
         }
         return true;
     }
+    public static boolean delete(String strFile) {
+        try
+        {
+            File f=new File(strFile);
+            if(!f.delete())
+            {
+                return false;
+            }
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+        return true;
+    }
+    public static boolean deleteDir(String strFolder) {
+        try
+        {
+            File f=new File(strFolder);
+            if(f.exists())
+            {
+                return f.delete();
+            }
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+        return true;
+    }
 }

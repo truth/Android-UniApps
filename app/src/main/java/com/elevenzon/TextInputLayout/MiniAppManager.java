@@ -24,6 +24,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -43,7 +45,7 @@ public class MiniAppManager {
     private static String [] names = {"04E3A11","2108B0A","AB47F19"};
     //public final  static String serverUrl = "http://s1.wangzhenli.net";
     public final static String serverUrl ="http://122.225.91.190:8088";
-    private static Map<String,TinyApp> apps = new HashMap<>();
+    private static Hashtable<String,TinyApp> apps = new Hashtable<>();
     private static SharedPreferences sp = null;
     private static Context ctx = null;
 
@@ -54,7 +56,7 @@ public class MiniAppManager {
         return apps.values();
     }
     public static MainActivity mainActivity;
-    public static void init(Context context) {
+    public static void init(final Context context) {
         ctx= context;
         sp = ctx.getSharedPreferences("apps",Context.MODE_PRIVATE);
         String cacheApp = sp.getString("cache","");
@@ -63,6 +65,7 @@ public class MiniAppManager {
                 List<TinyApp> list = JSON.parseArray(cacheApp, TinyApp.class);
 
                 for (TinyApp app : list) {
+                    app.setStatus(TinyApp.Status.INIT);
                     apps.put(app.getName(), app);
                 }
             }catch (Exception ex) {
@@ -92,12 +95,21 @@ public class MiniAppManager {
                             TinyApp tinyApp =  new TinyApp();
                             tinyApp.setApp(app.getApp());
                             tinyApp.setBrief(app.getMainDesc());
-                            tinyApp.setImage(app.getImageUrl());
+                            tinyApp.setImage(serverUrl+"/jeecg-boot/sys/common/static/"+app.getImageUrl());
                             //http://122.225.91.190:8088/jeecg-boot/sys/common/static/files/__UNI__40A58A1_1622622073581.wgt
                             tinyApp.setUrl(serverUrl+"/jeecg-boot/sys/common/static/"+app.getUrl());
                             tinyApp.setVersion(app.getVersion());
                             tinyApp.setName(app.getName());
                             tinyApps.add(tinyApp);
+                            TinyApp app1 = apps.get(tinyApp.getName());
+                            //Log.d(TAG,DCUniMPSDK.getInstance().getAppBasePath(context));
+                            if(app1!=null && !app1.getVersion().equals(app.getVersion())) {
+                                tinyApp.setNew(true);
+                                tinyApp.setStatus(TinyApp.Status.NEW);
+                            }else {
+                                tinyApp.setNew(false);
+                                tinyApp.setStatus(TinyApp.Status.OK);
+                            }
                             apps.put(tinyApp.getName(),tinyApp);
                         }
                     }
@@ -107,7 +119,7 @@ public class MiniAppManager {
                         apps.put(app.getName(),app);
                     }
                     */
-
+                    updateApps();
                     SharedPreferences.Editor editor = sp.edit();
                     editor.putString("cache",JSON.toJSONString(tinyApps));
                     editor.commit();
@@ -118,6 +130,30 @@ public class MiniAppManager {
             }
         }).start();
     }
+    public static void updateApps() {
+        //Collection<TinyApp> tinyApps = apps.values();
+        Iterator<Map.Entry<String, TinyApp>> entries = apps.entrySet().iterator();
+        while (entries.hasNext()) {
+            Map.Entry<String, TinyApp> entry = entries.next();
+            TinyApp tinyApp = entry.getValue();
+            if(tinyApp.getStatus().equals(TinyApp.Status.INIT)) {
+                // delete  tinyApp resources .
+                remove(ctx,tinyApp.getName(),tinyApp.getApp());
+                deleteApp(ctx,tinyApp.getName(),tinyApp.getApp());
+                //apps.remove(tinyApp.getName());
+                entries.remove();
+            }
+            //System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+        }
+//        for(TinyApp tinyApp:tinyApps) {
+//            if(tinyApp.getStatus().equals(TinyApp.Status.INIT)) {
+//                // delete  tinyApp resources .
+//                remove(ctx,tinyApp.getName(),tinyApp.getApp());
+//                deleteApp(ctx,tinyApp.getName(),tinyApp.getApp());
+//                apps.remove(tinyApp.getName());
+//            }
+//        }
+    }
     public static void start(Context context,int index) {
         start(context,"__UNI__"+MiniAppManager.get(index));
     }
@@ -125,15 +161,24 @@ public class MiniAppManager {
         String wgtPath = context.getExternalCacheDir().getPath()+"/"+name+".wgt";
         return FileUtil.fileIsExists(wgtPath);
     }
+    private static boolean remove(Context context,String name,String app) {
+        String wgtPath = context.getExternalCacheDir().getPath()+"/"+app+".wgt";
+        if(FileUtil.fileIsExists(wgtPath)){
+            FileUtil.delete(wgtPath);
+        }
+        //deleteApp(context,name,app);
+        return  true;
+    }
     public static boolean startApp(final Context context,String name) {
         final  TinyApp app = apps.get(name);
-        if(app!=null && exist(context,app.getApp())) {
+        if(app!=null && !app.isNew() && exist(context,app.getApp())) {
             startExt(context,app);
             return true;
         }else {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
+                    remove(context,app.getName(),app.getApp());
                     String wgtPath = context.getExternalCacheDir().getPath() + "/"+app.getApp()+".wgt";
                     if(DownloadSmallFile(app.getUrl(),wgtPath))
                     {
@@ -172,10 +217,14 @@ public class MiniAppManager {
 
         return true;
     }
+    public static void deleteApp(final Context context,String name,String app) {
+        String basePath = DCUniMPSDK.getInstance().getAppBasePath(context);
+        FileUtil.deleteDir(basePath+app);
+    }
     public  static void startExt(final  Context context,TinyApp app) {
         String wgtPath = context.getExternalCacheDir().getPath() + "/"+app.getApp()+".wgt";
         final String name = app.getApp();
-        if(DCUniMPSDK.getInstance().isExistsApp(name)){
+        if(!app.isNew()&& DCUniMPSDK.getInstance().isExistsApp(name)){
             try {
                 DCUniMPSDK.getInstance().startApp(context, name);
             } catch (Exception e) {

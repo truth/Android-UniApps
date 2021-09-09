@@ -23,7 +23,7 @@ import dc.squareup.okhttp3.Response;
 
 public class MyAsyncTask extends AsyncTask<Integer, String, String> {
     private static String TAG="TinyAPP";
-    private static String url="http://122.225.91.190:8088/jeecg-boot//sys/apiLogin";
+    private static String url="http://122.225.91.190:8088/jeecg-boot/sys/apiLogin";
     private Context ctx;
     private LoginActivity activity;
     private String user;
@@ -65,6 +65,8 @@ public class MyAsyncTask extends AsyncTask<Integer, String, String> {
             if(json!=null && json.getBoolean("success")) {
                 SharedPreferences sp = ctx.getSharedPreferences("private",Context.MODE_PRIVATE);
                 sp.edit().putString("user",content).commit();
+                sp.edit().putString("username",user).commit();
+                sp.edit().putString("password",password).commit();
                 JSONObject result = json.getJSONObject("result");
                 if(result!=null) {
                     JSONObject user = result.getJSONObject("userInfo");
